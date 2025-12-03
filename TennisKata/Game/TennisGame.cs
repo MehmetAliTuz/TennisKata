@@ -20,22 +20,79 @@ namespace TennisKata.Game
 
         public string GetScore()
         {
-            if (_player1.Points == 0 && _player2.Points == 0)
+            if (_player1.Points == _player2.Points)
             {
-                return "Love-All";
+                return GetEqualScoreDescription(_player1.Points);
             }
 
-            throw new NotImplementedException();
+            if (_player1.Points >= 4 || _player2.Points >= 4)
+            {
+                return GetEndGameScore();
+            }
+
+            return $"{PointToText(_player1.Points)}-{PointToText(_player2.Points)}";
+        }
+
+        private string GetEndGameScore()
+        {
+            int difference = _player1.Points - _player2.Points;
+
+            if (difference == 1)
+            {
+                return $"Advantage {_player1.Name}";
+            }
+
+            if (difference == -1)
+            {
+                return $"Advantage {_player2.Name}";
+            }
+
+            if (difference >= 2)
+            {
+                return $"Win for {_player1.Name}";
+            }
+
+            if (difference <= -2)
+            {
+                return $"Win for {_player2.Name}";
+            }
+
+            return "Deuce";
+        }
+
+
+
+        private string GetEqualScoreDescription(int points)
+        {
+            return points switch
+            {
+                0 => "Love-All",
+                1 => "Fifteen-All",
+                2 => "Thirty-All",
+                _ => "Deuce"
+            };
+        }
+
+        private string PointToText(int points)
+        {
+            return points switch
+            {
+                0 => "Love",
+                1 => "Fifteen",
+                2 => "Thirty",
+                3 => "Forty",
+                _ => throw new ArgumentOutOfRangeException(nameof(points))
+            };
         }
 
         public void PointToPlayer1()
         {
-            throw new NotImplementedException();
+            _player1.ScorePoint();
         }
 
         public void PointToPlayer2()
         {
-            throw new NotImplementedException();
+            _player2.ScorePoint();
         }
     }
 }
